@@ -1,8 +1,12 @@
 import React from 'react';
+import axios from 'axios';
 
 const App = () => {
-  console.log('something');
-  return <h1>Hello, world!</h1>;
+  const login = () => {
+    axios.get('/login');
+  };
+
+  return <button type="button" onClick={login}> click me </button>;
 };
 
 export default App;
