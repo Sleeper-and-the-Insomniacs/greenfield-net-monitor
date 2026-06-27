@@ -7,7 +7,8 @@
     "start": "node server/",
     "start:dev": "nodemon server/",
     "build": "webpack",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "npx lint-staged"
   },
   "husky": {
     "hooks": {
