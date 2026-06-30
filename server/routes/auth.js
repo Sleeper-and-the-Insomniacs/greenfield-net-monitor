@@ -9,6 +9,21 @@ const router = express.Router();
 
 require('dotenv').config({ path: path.join('config', '.env') });
 
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findOne(
+    { googleId: id },
+  )
+    .then((user) => done(null, user))
+    .catch((err) => {
+      console.error('Could not deserialize user:', err);
+      return done(err, null);
+    });
+});
+
 passport.use(
   new GoogleStrategy(
     {
@@ -21,11 +36,12 @@ passport.use(
     // displayName: profile.displayName,
     // emails: profile.emails[0].value }
     (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id })
-        .then((user) => {
-          console.info('Found user:');
-          return done(null, user);
-        })
+      User.findOneAndUpdate(
+        { googleId: profile.id },
+        { googleId: profile.id },
+        { upsert: true, new: true },
+      )
+        .then((user) => done(null, user))
         .catch((err) => {
           console.error('Error cannot find user:', err);
           return done(err, null);
@@ -34,15 +50,13 @@ passport.use(
   ),
 );
 
-router.get(
-  '/login',
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-  }),
-);
+router.get('/login', passport.authenticate('google', {
+  scope: ['profile', 'email'],
+}));
 
 router.get('/redirect/google', passport.authenticate('google', {
   failureRedirect: '/login',
+  successRedirect: '/',
 }));
 
 module.exports = router;
