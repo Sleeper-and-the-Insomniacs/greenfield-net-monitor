@@ -40,7 +40,11 @@ passport.use(
     (accessToken, refreshToken, profile, done) => {
       User.findOneAndUpdate(
         { googleId: profile.id },
-        { googleId: profile.id },
+        {
+          googleId: profile.id,
+          displayName: profile.displayName,
+          email: profile.emails[0].value,
+        },
         // replaced deprecated value
         { upsert: true, returnDocument: 'after' },
       )
