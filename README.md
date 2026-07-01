@@ -35,8 +35,7 @@ A scripted, multi-step simulation of a user journey (e.g., login -> search -> ch
 #### Step 1: Data Models
 
 - [x] `SyntheticTest.js` - steps array (method, url, body, expectedStatus), interval, active flag
-- [ ] `TestResult.js` - per-step results, overall status, TTL index (30-day auto-delete)
-- [ ] Confirm with buddies: per-step `expectedStatus` validation, or just final-step?
+- [x] `TestResult.js` - per-step results, overall status, TTL index (30-day auto-delete)
 - Docs: [Mongoose indexes](https://mongoosejs.com/docs/guide.html#indexes)
 - Docs: [MongoDB TTL indexes](https://mongodb.com/docs/manual/core/index-ttl/)
 
