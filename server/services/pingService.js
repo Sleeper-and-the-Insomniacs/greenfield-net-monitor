@@ -1,4 +1,3 @@
-/* eslint no-underscore-dangle: 0 */
 const axios = require('axios');
 const Pings = require('../db/schemas/pings');
 
@@ -14,10 +13,13 @@ const pingUrl = (monitor, io) => {
         statusCode: res.status,
       });
 
-      io.to(`${monitor.name}`).emit({
-        isConnected: true,
-        responseTime,
-      });
+      io.to(`monitor: ${monitor.name}`).emit(
+        'monitorStatus',
+        {
+          isConnected: true,
+          responseTime,
+        },
+      );
     })
     .catch((err) => {
       const responseTime = Date.now() - start;
@@ -26,13 +28,16 @@ const pingUrl = (monitor, io) => {
         status: 'down',
         responseTime,
         statusCode: err.response.status,
-        error: err.response.message,
+        error: err.message,
       });
 
-      io.to(`${monitor.name}`).emit({
-        isConnected: false,
-        responseTime,
-      });
+      io.to(`monitor: ${monitor.name}`).emit(
+        'monitorStatus',
+        {
+          isConnected: false,
+          responseTime,
+        },
+      );
     });
 };
 

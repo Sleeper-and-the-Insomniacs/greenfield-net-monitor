@@ -5,6 +5,8 @@ const passport = require('passport');
 const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const router = require('./routes/router');
+const Monitors = require('./db/schemas/monitors');
+const startMonitoring = require('./services/startMonitors');
 
 const app = express();
 const server = createServer(app);
@@ -33,6 +35,13 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.info('user disconnected');
   });
+
+  const userId = socket.request.user._id;
+  const monitors = Monitors.find({ userId });
+
+  monitors.forEach((monitor) => {
+    socket.join(`monitor: ${monitor._id}`);
+  });
 });
 
 server.listen(port, () => {
@@ -40,5 +49,7 @@ server.listen(port, () => {
     App listening on:
     - http://localhost:${port}
     - http://127.0.0.1:${port}
-  `);
+    `);
 });
+
+startMonitoring(io);
