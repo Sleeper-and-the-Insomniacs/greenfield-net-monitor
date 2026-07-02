@@ -1,12 +1,16 @@
+const path = require('path');
 const mongoose = require('mongoose');
 const Users = require('./schemas/users');
 
-const connectDB = () => mongoose.connect('mongodb://127.0.0.1:27017/greenfield')
+require('dotenv').config({ path: path.join('config', '.env') });
+
+const connectDB = () => mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.info('Successfully connected to DB');
   })
   .catch((err) => {
     console.error('Failed to connect to DB', err);
+    throw err;
   });
 
 module.exports = {
